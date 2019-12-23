@@ -1,0 +1,120 @@
+package ugos;
+
+import java.awt.*;  
+import javax.swing.*;  
+import java.awt.event.*;  
+  
+public class StudentManage extends JFrame implements ActionListener   
+{  
+    public static void main(String[] args)   
+    {  
+        new StudentManage();  
+    }  
+    
+    private JLabel queryLab = null;  
+    private JTextField queryTxt = null;  
+    private JButton queryBtn = null;  
+    private JButton allBtn = null;  
+    private JTable resultTb = null;  
+    private JScrollPane jsp = null;  
+    private JButton addBtn = null;  
+    private JButton deleteBtn = null;  
+    private JButton updateBtn = null;  
+    private JPanel top = null;  
+    private JPanel bottom = null;  
+    private StuModel sm = null;  
+      
+    public StudentManage()  
+    {  
+    	super("学生管理系统");  
+        queryLab = new JLabel("请输入姓名:");  
+        queryTxt = new JTextField(10);  
+        queryBtn = new JButton("查询");  
+        allBtn = new JButton("全部");  
+        queryBtn.addActionListener(this);  
+        queryBtn.setActionCommand("query");  
+        allBtn.addActionListener(this);  
+        allBtn.setActionCommand("all");  
+        addBtn = new JButton("添加");  
+        deleteBtn = new JButton("删除");  
+        updateBtn = new JButton("修改");  
+        addBtn.addActionListener(this);  
+        addBtn.setActionCommand("add");  
+        deleteBtn.addActionListener(this);  
+        deleteBtn.setActionCommand("delete");  
+        updateBtn.addActionListener(this);  
+        updateBtn.setActionCommand("update");   
+        top = new JPanel();  
+        top.add(queryLab);  
+        top.add(queryTxt);  
+        top.add(queryBtn);  
+        top.add(allBtn);   
+        bottom = new JPanel();  
+        bottom.add(addBtn);  
+        bottom.add(deleteBtn);  
+        bottom.add(updateBtn);   
+        sm = new StuModel();  
+        String sql = "select * from stu";  
+        sm.queryStu(sql, null);  
+        resultTb = new JTable(sm);  
+        jsp = new JScrollPane(resultTb);  
+        this.add(top,BorderLayout.NORTH);  
+        this.add(jsp,BorderLayout.CENTER);  
+        this.add(bottom,BorderLayout.SOUTH);   
+        this.setSize(400, 300);  
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
+        this.setVisible(true);  
+        this.setResizable(false);  
+    }  
+       
+    public void actionPerformed(ActionEvent e)  
+    {   
+        if(e.getActionCommand().equals("query")) {    
+            String name = queryTxt.getText().trim();  
+            if(name.length() != 0) {  
+                String sql = "select * from stu where stuName=?";  
+                String []paras = {name};   
+                jtableUpdate(sql, paras);  
+            } else {  
+                JOptionPane.showMessageDialog(this, "姓名输入不能为空");  
+            }  
+        } else if(e.getActionCommand().equals("add")) {  
+            new StuAddDialog(this, "添加学生信息", true);  
+            String sql = "select * from stu";  
+            jtableUpdate(sql, null);  
+        } else if(e.getActionCommand().equals("all")) {    
+            String sql = "select * from stu";  
+            jtableUpdate(sql, null);  
+        } else if(e.getActionCommand().equals("delete")) {      
+            int rowNum = this.resultTb.getSelectedRow();  
+            if(rowNum == -1) {  
+                JOptionPane.showMessageDialog(this, "请选择一行");  
+                return ;  
+            }  
+            String stuId = (String)sm.getValueAt(rowNum, 0);   
+            String sql = "delete from stu where stuId=?";  
+            String []paras = {stuId};  
+            StuModel tmp = new StuModel();  
+            tmp.cudStu(sql, paras);  
+            sql = "select * from stu";  
+            jtableUpdate(sql, null);  
+        } else if(e.getActionCommand().equals("update")) {      
+            int rowNum = this.resultTb.getSelectedRow();  
+            if(rowNum == -1) {  
+                JOptionPane.showMessageDialog(this, "请选择一行");  
+                return ;  
+            }  
+            new StuUpdateDialog(this, "修改学生信息", true, sm, rowNum);  
+            String sql = "select * from stu";  
+            jtableUpdate(sql, null);  
+        }  
+    }  
+      
+    public void jtableUpdate(String sql, String[] paras)  
+    {    
+        sm = new StuModel();  
+        sm.queryStu(sql, paras);    
+        resultTb.setModel(sm);  
+    }  
+  
+}

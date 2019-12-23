@@ -1,0 +1,72 @@
+package ugos;
+import java.awt.BorderLayout;  
+import java.awt.Dialog;  
+import java.awt.Frame;  
+import java.awt.GridLayout;  
+import java.awt.event.ActionEvent;  
+import java.awt.event.ActionListener;  
+import javax.swing.*; 
+public class StuAddDialog extends JDialog implements ActionListener{    
+    private JLabel idLab,nameLab,sexLab,ageLab,jgLab,deptLab;  
+    private JTextField idTxt,nameTxt,sexTxt,ageTxt,jgTxt,deptTxt;  
+    private JButton addBtn,cancelBtn;  
+    private JPanel left,center,bottom;  
+       
+    public StuAddDialog(Frame owner, String title, boolean modal)   
+    {   
+        super(owner, title, modal);    
+        idLab = new JLabel("学号: ");  
+        nameLab = new JLabel("姓名: ");  
+        sexLab = new JLabel("性别: ");  
+        ageLab = new JLabel("年龄: ");  
+        jgLab = new JLabel("籍贯: ");  
+        deptLab = new JLabel("系别: ");  
+        idTxt = new JTextField();  
+        nameTxt = new JTextField();  
+        sexTxt = new JTextField();  
+        ageTxt = new JTextField();  
+        jgTxt = new JTextField();  
+        deptTxt = new JTextField();  
+        addBtn = new JButton("添加");  
+        cancelBtn = new JButton("取消");    
+        addBtn.addActionListener(this);  
+        addBtn.setActionCommand("add");  
+        cancelBtn.addActionListener(this);  
+        cancelBtn.setActionCommand("cancel");    
+        left = new JPanel();  
+        left.setLayout(new GridLayout(6, 1));  
+        left.add(idLab);  left.add(nameLab);   
+        left.add(sexLab); left.add(ageLab);   
+        left.add(jgLab);  left.add(deptLab);    
+        center = new JPanel();  
+        center.setLayout(new GridLayout(6, 1));  
+        center.add(idTxt);  center.add(nameTxt);  
+        center.add(sexTxt); center.add(ageTxt);  
+        center.add(jgTxt);  center.add(deptTxt);    
+        bottom = new JPanel();  
+        bottom.add(addBtn);  
+        bottom.add(cancelBtn);  
+        this.add(left,BorderLayout.WEST);  
+        this.add(center,BorderLayout.CENTER);  
+        this.add(bottom,BorderLayout.SOUTH);   
+          
+        this.setSize(300, 250);  
+        this.setResizable(false);  
+        this.setVisible(true);  
+    }  
+    
+    public void actionPerformed(ActionEvent e)   
+    {    
+        if(e.getActionCommand().equals("add")) {  
+            StuModel tmp = new StuModel();  
+            String sql = "insert into stu values(?,?,?,?,?,?)";  
+            String []paras = {idTxt.getText(),nameTxt.getText(),sexTxt.getText(),  
+                            ageTxt.getText(),jgTxt.getText(),deptTxt.getText()};  
+            if(!tmp.cudStu(sql, paras))  
+                JOptionPane.showMessageDialog(this, "添加学生信息失败");   
+            this.dispose();  
+        } else if(e.getActionCommand().equals("cancel")) {   
+            this.dispose();  
+        }  
+    }  
+}  

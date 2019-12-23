@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS `stu`;
+CREATE TABLE `stu` (
+  `stuId` int(11) NOT NULL AUTO_INCREMENT,
+  `stuName` varchar(30) DEFAULT NULL,
+  `stuSex` varchar(30) DEFAULT NULL,
+  `stuAge` int(11) DEFAULT NULL,
+  `stuJg` varchar(30) DEFAULT NULL,
+  `stuDept` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`stuId`)
+) ENGINE=MyISAM AUTO_INCREMENT=10002 DEFAULT CHARSET=utf8;
